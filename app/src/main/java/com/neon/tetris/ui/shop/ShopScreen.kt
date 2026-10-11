@@ -26,6 +26,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -42,6 +43,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.neon.tetris.R
 import com.neon.tetris.billing.BillingEvent
@@ -83,6 +87,19 @@ fun ShopScreen(
     // the pill keeps its text while it animates out, so remember the last notice separately
     var shownNotice by remember { mutableStateOf<ShopNotice?>(null) }
     var noticeId by remember { mutableIntStateOf(0) }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                vm.onResume()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     LaunchedEffect(vm) { vm.onShopOpened() }
     LaunchedEffect(vm) {
@@ -216,7 +233,7 @@ private fun PowerUpCard(
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 NeonText(powerUpTitle(type), size = 18.sp, weight = FontWeight.Black, letterSpacing = 0.5.sp)
                 NeonText(powerUpDescription(type), size = 12.sp, color = Neon.TextDim, weight = FontWeight.Medium, letterSpacing = 0.2.sp, maxLines = 3)
-                if (inventory.owned) {
+                if (inventory.owned && inventory.quantity > 0) {
                     NeonText(
                         stringResource(R.string.shop_charges, inventory.quantity),
                         size = 13.sp, color = color, weight = FontWeight.Black, letterSpacing = 1.sp,
@@ -224,7 +241,7 @@ private fun PowerUpCard(
                 }
             }
 
-            if (inventory.owned) {
+            if (inventory.owned && inventory.quantity > 0) {
                 OwnedBadge()
             } else {
                 val available = product?.available == true

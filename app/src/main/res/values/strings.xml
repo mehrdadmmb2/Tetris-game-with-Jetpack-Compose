@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Neon Tetris</string>
+    <string name="app_name" translatable="false">Tetris pro</string>
 
     <!-- Home -->
     <string name="home_play">PLAY</string>
@@ -31,15 +31,15 @@
     <string name="pause_home">HOME</string>
 
     <!-- Power-ups -->
-    <string name="powerup_bomb">Bomb</string>
+    <string name="powerup_bomb">x6 Bomb</string>
     <string name="powerup_bomb_desc">Blasts away the bottom %1$d rows.</string>
-    <string name="powerup_lightning">Lightning</string>
+    <string name="powerup_lightning">x6 Lightning</string>
     <string name="powerup_lightning_desc">Strikes and clears one column of your choice.</string>
-    <string name="powerup_hammer">Hammer</string>
+    <string name="powerup_hammer">x6 Hammer</string>
     <string name="powerup_hammer_desc">Smashes a 3×3 area wherever you tap.</string>
-    <string name="powerup_color_bomb">Color Bomb</string>
+    <string name="powerup_color_bomb">x6 Color Bomb</string>
     <string name="powerup_color_bomb_desc">Removes every block of the color you tap.</string>
-    <string name="powerup_double_score">Double Score</string>
+    <string name="powerup_double_score">x6 Double Score</string>
     <string name="powerup_double_score_desc">Doubles all points for %1$d seconds.</string>
 
     <string name="target_lightning">Tap a column to strike it</string>

@@ -125,11 +125,10 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
         if (s.phase != Phase.FALLING && s.phase != Phase.TARGETING) return
         val inv = inventory.value[type] ?: PowerUpInventory()
         when {
-            !inv.owned -> {
+            !inv.owned || inv.quantity <= 0 -> {
                 pause()
                 _uiEvents.tryEmit(GameUiEvent.OpenShop)
             }
-            inv.quantity <= 0 -> _uiEvents.tryEmit(GameUiEvent.Toast(ToastKind.OUT_OF_CHARGES, type))
             s.phase == Phase.TARGETING && s.targeting == type -> engine.cancelTargeting()
             else -> engine.usePowerUp(type)
         }

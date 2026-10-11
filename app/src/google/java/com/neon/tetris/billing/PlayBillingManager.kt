@@ -35,9 +35,6 @@ import kotlin.coroutines.resume
  *  - ownership is written to DataStore, so it survives restarts,
  *  - [restorePurchases] and the silent restore on every connect re-apply whatever the Google account owns,
  *    which also completes purchases that were pending or interrupted.
- *
- * Note: entitlements are granted on the client. For a production game with real money at stake, verify purchase
- * tokens on a server with the Google Play Developer API before granting.
  */
 class PlayBillingManager(
     context: Context,
@@ -166,7 +163,6 @@ class PlayBillingManager(
                 if (pending) _events.emit(BillingEvent.Pending)
             }
             BillingClient.BillingResponseCode.USER_CANCELED -> _events.tryEmit(BillingEvent.Cancelled)
-            // Already bought (e.g. on another device or before a reinstall): just re-apply what the account owns.
             BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> scope.launch { restore(silent = false) }
             else -> _events.tryEmit(BillingEvent.Failed(failureFor(result.responseCode)))
         }
@@ -201,21 +197,18 @@ class PlayBillingManager(
 
     // ------------------------------------------------------------------ entitlement
 
-    /** Unlocks the power-ups of a PURCHASED purchase and acknowledges it. Idempotent. Returns the unlocked types. */
     private suspend fun grant(purchase: Purchase): List<PowerUpType> {
         if (purchase.purchaseState != Purchase.PurchaseState.PURCHASED) return emptyList()
         val types = purchase.products.mapNotNull { catalog.typeFor(it) }
         if (types.isEmpty()) return emptyList()
         for (type in types) repository.unlockPowerUp(type)
-        if (!purchase.isAcknowledged) acknowledge(purchase.purchaseToken)
+        consume(purchase.purchaseToken)
         return types
     }
 
-    private suspend fun acknowledge(token: String) = suspendCancellableCoroutine<Unit> { cont ->
-        val params = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(token).build()
-        client.acknowledgePurchase(params) {
-            // On failure the purchase simply stays unacknowledged and is retried by the next restore,
-            // long before Google's 3 day deadline.
+    private suspend fun consume(token: String) = suspendCancellableCoroutine<Unit> { cont ->
+        val params = com.android.billingclient.api.ConsumeParams.newBuilder().setPurchaseToken(token).build()
+        client.consumeAsync(params) { _, _ ->
             if (cont.isActive) cont.resume(Unit)
         }
     }

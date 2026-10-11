@@ -2,9 +2,8 @@ package com.neon.tetris
 
 import android.app.Application
 import com.neon.tetris.billing.BillingManager
-import com.neon.tetris.billing.PlayBillingManager
+import com.neon.tetris.billing.BillingManagerFactory
 import com.neon.tetris.billing.PowerUpCatalog
-import com.neon.tetris.billing.SimulatedBillingManager
 import com.neon.tetris.data.GameRepository
 import com.neon.tetris.util.Haptics
 
@@ -13,9 +12,7 @@ class AppContainer(application: Application) {
     val repository = GameRepository(application)
     val catalog = PowerUpCatalog.fromResources(application)
     val haptics = Haptics(application)
-    val billing: BillingManager =
-        if (BuildConfig.SIMULATE_PURCHASES) SimulatedBillingManager(catalog, repository)
-        else PlayBillingManager(application, catalog, repository)
+    val billing: BillingManager = BillingManagerFactory.create(application, catalog, repository)
 }
 
 class TetrisApplication : Application() {

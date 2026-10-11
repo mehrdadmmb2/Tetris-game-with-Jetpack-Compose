@@ -61,9 +61,11 @@ class GameRepository(private val dataStore: DataStore<Preferences>) {
 
     val inventory: Flow<Inventory> = data.map { p ->
         PowerUpType.entries.associateWith { type ->
+            val qty = p[Keys.quantity(type)] ?: 0
+            val isOwned = (p[Keys.owned(type)] ?: false) && qty > 0
             PowerUpInventory(
-                owned = p[Keys.owned(type)] ?: false,
-                quantity = p[Keys.quantity(type)] ?: 0,
+                owned = isOwned,
+                quantity = qty,
             )
         }
     }.distinctUntilChanged()
@@ -90,35 +92,39 @@ class GameRepository(private val dataStore: DataStore<Preferences>) {
     // ---------------------------------------------------------------- power-ups
 
     /**
-     * Marks a power-up as purchased. The starting charges are granted only on the first unlock, so
-     * re-delivered or restored purchases never hand out charges twice. Returns true if newly unlocked.
+     * Marks a power-up as purchased and grants charges. Allows buying more charges when out of charges.
+     * Returns true if newly unlocked or recharged.
      */
     suspend fun unlockPowerUp(type: PowerUpType, charges: Int = PowerUpRules.CHARGES_ON_UNLOCK): Boolean {
         var newlyUnlocked = false
         dataStore.edit { p ->
-            if (p[Keys.owned(type)] != true) {
-                p[Keys.owned(type)] = true
-                p[Keys.quantity(type)] = ((p[Keys.quantity(type)] ?: 0) + charges).coerceAtMost(PowerUpRules.MAX_CHARGES)
-                newlyUnlocked = true
-            }
+            val currentQty = p[Keys.quantity(type)] ?: 0
+            val wasOwned = (p[Keys.owned(type)] == true) && currentQty > 0
+            p[Keys.owned(type)] = true
+            p[Keys.quantity(type)] = (currentQty + charges).coerceAtMost(PowerUpRules.MAX_CHARGES)
+            newlyUnlocked = !wasOwned
         }
         return newlyUnlocked
     }
 
-    /** Spends one charge atomically. Returns false when the power-up is not owned or has no charges. */
+    /** Spends one charge atomically. Returns false when out of charges. Sets owned = false when quantity reaches 0. */
     suspend fun consumePowerUp(type: PowerUpType): Boolean {
         var consumed = false
         dataStore.edit { p ->
             val quantity = p[Keys.quantity(type)] ?: 0
-            if (p[Keys.owned(type)] == true && quantity > 0) {
-                p[Keys.quantity(type)] = quantity - 1
+            if (quantity > 0) {
+                val newQty = quantity - 1
+                p[Keys.quantity(type)] = newQty
+                if (newQty == 0) {
+                    p[Keys.owned(type)] = false
+                }
                 consumed = true
             }
         }
         return consumed
     }
 
-    /** Adds charges to every owned power-up (earned by reaching level milestones), capped at the maximum. */
+    /** Adds charges to every previously purchased power-up (earned by reaching level milestones), capped at max. */
     suspend fun rechargePowerUps(
         amount: Int = PowerUpRules.RECHARGE_AMOUNT,
         max: Int = PowerUpRules.MAX_CHARGES,
@@ -126,8 +132,10 @@ class GameRepository(private val dataStore: DataStore<Preferences>) {
         if (amount <= 0) return
         dataStore.edit { p ->
             for (type in PowerUpType.entries) {
-                if (p[Keys.owned(type)] == true) {
-                    p[Keys.quantity(type)] = ((p[Keys.quantity(type)] ?: 0) + amount).coerceAtMost(max)
+                val qty = p[Keys.quantity(type)] ?: 0
+                if (p[Keys.owned(type)] == true || qty > 0) {
+                    p[Keys.owned(type)] = true
+                    p[Keys.quantity(type)] = (qty + amount).coerceAtMost(max)
                 }
             }
         }

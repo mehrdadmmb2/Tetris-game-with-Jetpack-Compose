@@ -53,6 +53,10 @@ class ShopViewModel(
         viewModelScope.launch { billing.refreshProducts() }
     }
 
+    fun onResume() {
+        _buying.value = null
+    }
+
     fun buy(activity: Activity, type: PowerUpType) {
         if (_buying.value != null) return
         _buying.value = type

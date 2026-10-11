@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Replace with your actual RSA public key from Cafe Bazaar Developer Console -->
+    <string name="bazaar_rsa_public_key">MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDOpYJIp0PWnaye4fjgMxV6xoBx7rxVFmH4q2VvY3HQd3WCeZFzg0iKsMeCc60+9rMHi8OMCA+Cp47CtHIOLOKC3+Pq2D3XAJunchPaHBEm5X8zj4VIPRtBIhySu92I4/E1m+5fv13a8aa+zN9HFQtc+S8Gf7Y/sDeIGcgHbv2SD68FSR9KVG/WFO4oCu5FaJwu0KmpLdWH+MUKI9hO3ulEafGN3+jIwM1v0vBW5N8CAwEAAQ==</string>
+    <!-- Replace with your actual RSA public key from Myket Developer Console -->
+    <string name="myket_rsa_public_key">YOUR_MYKET_RSA_PUBLIC_KEY</string>
+</resources>

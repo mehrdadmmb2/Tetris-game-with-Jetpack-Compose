@@ -18,15 +18,30 @@ android {
 
     buildTypes {
         debug {
-            // Debug builds simulate purchases so every power-up can be tested without Play Console setup.
-            // Set to "false" to exercise the real Google Play Billing flow from a debug build.
-            buildConfigField("boolean", "SIMULATE_PURCHASES", "true")
+            // Set to "false" to exercise real billing flows (Google Play, Cafe Bazaar, Myket) from debug builds.
+            buildConfigField("boolean", "SIMULATE_PURCHASES", "false")
         }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("boolean", "SIMULATE_PURCHASES", "false")
+        }
+    }
+
+    flavorDimensions += "store"
+    productFlavors {
+        create("google") {
+            dimension = "store"
+            buildConfigField("String", "STORE_NAME", "\"Google Play\"")
+        }
+        create("bazaar") {
+            dimension = "store"
+            buildConfigField("String", "STORE_NAME", "\"Cafe Bazaar\"")
+        }
+        create("myket") {
+            dimension = "store"
+            buildConfigField("String", "STORE_NAME", "\"Myket\"")
         }
     }
 
@@ -51,7 +66,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.play.billing)
+
+    "googleImplementation"(libs.play.billing)
+    "bazaarImplementation"(libs.bazaar.poolakey)
+    "myketImplementation"(libs.myket.billing)
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
