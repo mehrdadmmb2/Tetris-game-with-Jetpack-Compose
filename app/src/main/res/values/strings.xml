@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Neon Tetris</string>
+
+    <!-- Home -->
+    <string name="home_play">PLAY</string>
+    <string name="home_continue">CONTINUE</string>
+    <string name="home_new_game">NEW GAME</string>
+    <string name="home_shop">POWER-UPS</string>
+    <string name="home_settings">SETTINGS</string>
+    <string name="home_best_score">BEST SCORE</string>
+    <string name="home_highest_level">HIGHEST LEVEL</string>
+
+    <!-- In-game HUD -->
+    <string name="hud_score">SCORE</string>
+    <string name="hud_best">BEST</string>
+    <string name="hud_level">LEVEL</string>
+    <string name="hud_next">NEXT</string>
+    <string name="hud_lines">LINES</string>
+    <string name="hud_max">MAX</string>
+    <string name="hud_combo_chip">COMBO ×%1$d</string>
+    <string name="hud_double_score_chip">×2 · %1$ds</string>
+    <string name="combo_popup">COMBO ×%1$d</string>
+    <string name="level_up">LEVEL UP!</string>
+    <string name="level_up_sub">LEVEL %1$d</string>
+
+    <!-- Pause -->
+    <string name="pause_title">PAUSED</string>
+    <string name="pause_resume">RESUME</string>
+    <string name="pause_restart">RESTART</string>
+    <string name="pause_home">HOME</string>
+
+    <!-- Power-ups -->
+    <string name="powerup_bomb">Bomb</string>
+    <string name="powerup_bomb_desc">Blasts away the bottom %1$d rows.</string>
+    <string name="powerup_lightning">Lightning</string>
+    <string name="powerup_lightning_desc">Strikes and clears one column of your choice.</string>
+    <string name="powerup_hammer">Hammer</string>
+    <string name="powerup_hammer_desc">Smashes a 3×3 area wherever you tap.</string>
+    <string name="powerup_color_bomb">Color Bomb</string>
+    <string name="powerup_color_bomb_desc">Removes every block of the color you tap.</string>
+    <string name="powerup_double_score">Double Score</string>
+    <string name="powerup_double_score_desc">Doubles all points for %1$d seconds.</string>
+
+    <string name="target_lightning">Tap a column to strike it</string>
+    <string name="target_hammer">Tap anywhere to smash a 3×3 area</string>
+    <string name="target_color_bomb">Tap a block to remove every block of its color</string>
+
+    <string name="toast_out_of_charges">%1$s has no charges left. Keep playing to recharge!</string>
+    <string name="toast_nothing_to_clear">Nothing to clear there</string>
+    <string name="toast_already_active">Already active</string>
+    <string name="toast_recharged">Power-ups recharged!</string>
+
+    <!-- Game over -->
+    <string name="gameover_title">GAME OVER</string>
+    <string name="gameover_score">SCORE</string>
+    <string name="gameover_best">BEST SCORE</string>
+    <string name="gameover_level">LEVEL</string>
+    <string name="gameover_lines">LINES</string>
+    <string name="gameover_new_best">NEW BEST!</string>
+    <string name="gameover_play_again">PLAY AGAIN</string>
+    <string name="gameover_home">HOME</string>
+
+    <!-- Shop -->
+    <string name="shop_title">POWER-UPS</string>
+    <string name="shop_subtitle">Buy a power-up once to own it for good. Each one comes with %1$d charges, and every %2$d levels you reach recharges the ones you own.</string>
+    <string name="shop_buy">BUY</string>
+    <string name="shop_owned">OWNED</string>
+    <string name="shop_charges">%1$d charges ready</string>
+    <string name="shop_unavailable">UNAVAILABLE</string>
+    <string name="shop_restore">RESTORE PURCHASES</string>
+    <string name="shop_restoring">RESTORING…</string>
+    <string name="shop_billing_unavailable">Google Play billing isn\'t available right now. Prices appear once the store connects.</string>
+    <string name="shop_test_mode">TEST MODE: purchases are simulated in this debug build. Release builds use real Google Play Billing.</string>
+    <string name="shop_reset_test">Reset test purchases</string>
+
+    <string name="msg_purchased">%1$s unlocked!</string>
+    <string name="msg_pending">Payment pending. Your power-up unlocks as soon as it completes.</string>
+    <string name="msg_cancelled">Purchase cancelled.</string>
+    <string name="msg_failed_service">Couldn\'t reach Google Play. Check your connection and try again.</string>
+    <string name="msg_failed_product">This item isn\'t available for purchase right now.</string>
+    <string name="msg_failed_other">Something went wrong. Please try again.</string>
+    <string name="msg_restored">Purchases restored (%1$d).</string>
+    <string name="msg_restored_none">No purchases found for this Google account.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">SETTINGS</string>
+    <string name="settings_haptics">Haptic feedback</string>
+    <string name="settings_haptics_desc">Vibration when you move, drop and clear lines</string>
+    <string name="settings_ghost">Ghost piece</string>
+    <string name="settings_ghost_desc">Shows where the piece will land</string>
+    <string name="settings_swipe">Swipe controls</string>
+    <string name="settings_swipe_desc">Drag to move, tap to rotate, flick down to drop</string>
+    <string name="settings_shake">Screen shake</string>
+    <string name="settings_shake_desc">Impact effects on drops and explosions</string>
+    <string name="settings_version">Version %1$s</string>
+</resources>

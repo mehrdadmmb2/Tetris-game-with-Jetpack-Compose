@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Google Play in-app product IDs (one-time products, non-consumable).
+  Change them here to match Play Console -> Monetize -> Products -> One-time products,
+  or override them per build type / flavor with a different values file.
+  Nothing else in the code base hard-codes these values (see billing/PowerUpCatalog.kt).
+-->
+<resources>
+    <string name="product_id_bomb" translatable="false">neon_powerup_bomb</string>
+    <string name="product_id_lightning" translatable="false">neon_powerup_lightning</string>
+    <string name="product_id_hammer" translatable="false">neon_powerup_hammer</string>
+    <string name="product_id_color_bomb" translatable="false">neon_powerup_color_bomb</string>
+    <string name="product_id_double_score" translatable="false">neon_powerup_double_score</string>
+</resources>
