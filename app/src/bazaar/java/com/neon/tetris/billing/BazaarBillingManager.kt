@@ -89,7 +89,7 @@ class BazaarBillingManager(
     override suspend fun refreshProducts() {
         if (_status.value != BillingStatus.READY) return
         val infos = PowerUpType.entries.associateWith { type ->
-            ProductInfo(type, catalog.productId(type), price = "10,000 تومان")
+            ProductInfo(type, catalog.productId(type), price = "")
         }
         _products.value = infos
     }
