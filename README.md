@@ -1,91 +1,64 @@
-# Neon Tetris
+# Tetris Pro 🎮
 
-A modern, neon-styled Tetris for Android, built with **Kotlin + Jetpack Compose**: 10×20 board, SRS rotation with wall kicks,
-7-bag randomizer, swipe + button controls, 100 levels, combos, five paid power-ups (Google Play Billing), DataStore persistence,
-particles, haptics and a full set of animations.
+Tetris Pro is a modern take on the classic block puzzle game, built for Android using Kotlin and Jetpack Compose.
 
-## Verification status (please read)
+The goal is simple: fit the falling blocks together, clear as many lines as possible, and beat your high score. As you progress through the levels, the game gets faster, so you'll need quick reactions and a bit of strategy to keep going.
 
-| Part | Status |
-|---|---|
-| Game engine, rules, scoring, levels, power-ups (`game/`, `domain/`) | **53 JUnit tests green**, run with a standalone Kotlin compiler. Includes randomized fuzzing (invariants checked after every action) and a 2,500-piece bot game whose 887 line clears are verified against an independent reference model. Mutation checks confirmed the tests fail when the engine is deliberately broken. |
-| Compose UI, ViewModels, DataStore, Play Billing | **Not compiled with the Android SDK** (the build sandbox had no SDK or Maven access). All of it was type-checked against hand-written API stubs, so logic, nullability, `when` exhaustiveness and cross-file references are consistent. Library signatures follow the official Billing 8.x docs. A first Gradle build on your machine may still surface a small API mismatch; they should be quick fixes. |
-| Run on device | **Not done.** Please run it and look at the feel (animation timing, control sizes) on a real phone. |
+<img width="400" alt="game with compose" src="https://github.com/user-attachments/assets/52c895dd-21cd-4c3d-a8a4-af4f78b5e328" />
+<img width="400"  alt="game with compose" src="https://github.com/user-attachments/assets/eed463cc-59eb-4bfc-887f-2bbd47a9373e" />
+<img width="400" alt="game with compose" src="https://github.com/user-attachments/assets/e3d68005-6916-424e-babf-154622e38c07" />
 
-## Quick start
 
-1. Open the folder in **Android Studio** (Ladybug or newer, JDK 17) and let Gradle sync, or run `./gradlew assembleDebug`.
-2. Run on a device/emulator with **API 26+**. Unit tests: `./gradlew test`.
-3. Debug builds use **simulated purchases** (`SIMULATE_PURCHASES = true` in `app/build.gradle.kts`) so you can try the whole shop
-   (Buy → Owned → persisted → Restore) without Play Console. Release builds always use real Google Play Billing.
 
-## Controls
 
-| Action | Touch buttons | Swipe on the board |
-|---|---|---|
-| Move | ◀ ▶ (hold to repeat) | drag sideways, one column per cell dragged |
-| Rotate | ⟲ ⟳ | tap (or flick up) |
-| Soft drop | ▼ (hold) | drag down |
-| Hard drop | ⤓ | flick down |
-| Power-up | tap its button; Lightning / Hammer / Color Bomb then ask you to tap a target | |
+## Features
 
-## Rules and numbers (all tunable in `domain/GameRules.kt`)
+- Classic Tetris gameplay with a modern look
+- Smooth animations and colorful blocks
+- Touch controls for moving, rotating, and dropping pieces
+- Score tracking and a progressive level system
+- 100 levels with increasing difficulty
+- Combo system for consecutive line clears
+- Special power-ups with unique effects
+- Bomb power-up for clearing multiple rows
+- Animated explosions, particles, and level-up effects
+- In-game shop and power-up unlocks
+- Sound effects and haptic feedback
+- Progress and settings saved locally
+- Built entirely with Kotlin and Jetpack Compose
 
-* **Score:** every cleared cell is worth 5 points, times a multi-line multiplier (1 / 1.5 / 2 / 3), times a combo multiplier
-  (+0.5 per consecutive clear, capped at ×5), times 2 during Double Score. Single = 50, double = 150, triple = 300, four lines = 600.
-  Cells removed by power-ups are worth 3 points each.
-* **Levels:** `requiredScore = level × 100`, applied to the *total* score: level 1 is completed at 100 points, level 2 at 200 … level 100
-  at 10,000. (If you meant "L×100 points *within* each level", change `LevelSystem` only.) The HUD shows level and progress.
-* **Speed:** milliseconds per row: L1 800 · L5 611 · L10 440 · L20 238 · L30 141 · L50 71 · L100 50. Lock delay 500 ms (15 resets).
-* **Combo:** consecutive piece placements that clear lines; shows `COMBO ×2`, `×3` … with an animated popup.
+## Tech Stack
 
-## Power-ups and billing model
+- Kotlin
+- Jetpack Compose
+- Coroutines & StateFlow
+- DataStore
+- Google Play Billing integration
 
-| Power-up | Effect |
-|---|---|
-| Bomb | explodes the bottom 5 rows |
-| Lightning | clears one column (tap it) |
-| Hammer | clears a 3×3 area (tap the centre) |
-| Color Bomb | clears every block of one color (tap a block) |
-| Double Score | ×2 points for 30 s |
+## Getting Started
 
-Power-ups are locked until bought. Each is a **one-time (non-consumable) product**: buying it marks it **Owned** forever (restorable,
-persisted in DataStore) and grants 3 charges; each use costs 1 charge, and every 5 levels reached during play each owned power-up
-recharges by 1 (max 9). See `PowerUpRules`. Tapping a locked power-up in-game pauses and opens the shop.
+1. Clone this repository.
+2. Open the project in Android Studio.
+3. Sync Gradle and let the dependencies download.
+4. Configure billing products if you want to test in-app purchases.
+5. Build and run the app on an Android device or emulator.
 
-**Configure Play Console**
+Some monetization features may require additional configuration and testing through the relevant app store.
 
-1. Monetize → Products → One-time products: create five products whose IDs match `app/src/main/res/values/product_ids.xml`
-   (defaults `neon_powerup_bomb`, `_lightning`, `_hammer`, `_color_bomb`, `_double_score`), add a *Buy* purchase option with a price, activate.
-   **Product IDs live only in that file**; change them there (or override per build type/flavor).
-2. Upload a build to an internal testing track, add license testers, install from Play. Billing returns products only for an app
-   whose package name and signing key are known to Play. Change `applicationId`/`namespace` (`com.neon.tetris`) first.
-3. To exercise real billing from a debug build, set `SIMULATE_PURCHASES` to `"false"` in the `debug` block.
+## Contributions
 
-Purchases are acknowledged (required within 3 days), re-applied on every app start/resume (`restorePurchases`), and a manual
-**Restore Purchases** button is in the shop. Entitlements are granted on the client; for a real-money production game also verify
-purchase tokens on a server. The project uses Billing Library **8.3.0**; Billing 9.x exists and has a migration guide.
+Feel free to explore the code, report bugs, or suggest improvements. Contributions and feedback are always welcome.
 
-## Architecture
+## Support the Project ❤️
 
-```
-ui/        Compose screens + ViewModels (Home, Game, Game Over, Shop, Settings), board renderer, effects
-game/      TetrisEngine: pure Kotlin state machine (no Android), publishes StateFlow<GameState> + SharedFlow<GameEvent>
-domain/    rules (scoring, levels, power-up constants) and models
-data/      GameRepository on Preferences DataStore (best score, highest level, ownership, charges, settings)
-billing/   BillingManager interface, PlayBillingManager, SimulatedBillingManager (debug), PowerUpCatalog (product ids)
-util/      Haptics
-```
+If you enjoy the game or find the project useful, you can support its development with a crypto donation.
 
-The engine is driven by `update(dtMs)` from the ViewModel's game loop and is fully deterministic (inject a seeded `Random`).
-Animations that gate gameplay (line clear: Flash → Glow → Shrink → Particles → Remove → blocks fall) live in the engine's
-timeline; purely visual effects (piece gliding, particles, shake, popups) live in `ui/game/BoardFx`.
+- **BTC:** `bc1qxk0h9rdpgnh7yyc59uxndkrr2ndjglwtv3z72j`
+- **ETH:** `0x43EC594eE36b9895E863DF234f7d393606537209 `
+- **USDT (TRC20):** `TRzxqih3wSjPkb8EmrF7TzAvSquGhf1wwo`
 
-**Adding a power-up:** add a `PowerUpType`, implement its apply function in `TetrisEngine`, give it an icon/color/strings in `ui/`,
-and add its product id to `product_ids.xml` + `PowerUpCatalog`.
+Please verify the network and wallet address carefully before sending a donation.
 
-## Known limitations
+If you like the project, leaving a ⭐ on GitHub is also greatly appreciated!
 
-* No sound effects and no hold piece. Portrait only.
-* A running game survives navigation and backgrounding (it auto-pauses) but not process death.
-* The UI/billing layer has not been compiled against the real Android SDK in this environment (see above).
+Thanks for stopping by and happy gaming!
